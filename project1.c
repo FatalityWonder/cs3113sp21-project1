@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
         wait[i] = 0;
         
         // check for last occurance of Pid
-        for (int j = (numInstructions - 1); j >= 0; --j)
+        for (int j = (numInstructions - 1); j > 0; --j)
         {
             if (instructionList[j].pid == (i + 1))
             {
