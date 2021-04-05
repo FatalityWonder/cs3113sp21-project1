@@ -8,7 +8,7 @@ typedef struct InstructionData
     unsigned int priority;
 } InstructionData;
 
-int main()
+int main(int argc, char *argv[])
 {
     // input data, first two lines
     int numProcesses;
@@ -26,9 +26,25 @@ int main()
 
     struct InstructionData* instructionList;
 
+    FILE* file;
+
+    // open if not stdin
+    if (argc > 1)
+    {
+        file = fopen(argv[1], "r");
+    } 
+
     // rean first two lines of the file in
-    fscanf(stdin, "%d\n", &numProcesses);
-    fscanf(stdin, "%d %d\n", &numExecutionElements, &numInstructions);
+    if (argc > 1)
+    {
+        fscanf(file, "%d\n", &numProcesses);
+        fscanf(file, "%d %d\n", &numExecutionElements, &numInstructions);
+    }
+    else
+    {
+        fscanf(stdin, "%d\n", &numProcesses);
+        fscanf(stdin, "%d %d\n", &numExecutionElements, &numInstructions);
+    }
 
     // allocate memory for array
     instructionList = malloc(sizeof(InstructionData) * numInstructions);
@@ -40,12 +56,20 @@ int main()
         instructionList[i].burst = 0;
         instructionList[i].priority = 0;
     }
-
+    
     // read values of each process
     for (int i = 0; i < numInstructions; ++i)
     {
-        fscanf(stdin, "%d %d %d\n", &instructionList[i].pid, &instructionList[i].burst, &instructionList[i].priority);
+        if (argc > 1)
+            fscanf(file, "%d %d %d\n", &instructionList[i].pid, &instructionList[i].burst, &instructionList[i].priority);
+        else
+            fscanf(stdin, "%d %d %d\n", &instructionList[i].pid, &instructionList[i].burst, &instructionList[i].priority);
+
     }
+
+    // close if not stdin
+    if (argc > 1)
+        fclose(file);
 
     // count voluntary and non-voluntary switches
     voluntary = 1; // first switch skipped due to nothing else to compare to
