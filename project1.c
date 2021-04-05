@@ -138,8 +138,6 @@ int main(int argc, char *argv[])
         // count wait time
         for (int j = 0; j < lastOccurance; ++j)
             wait[i] += instructionList[j].burst;
-
-        printf("%d\n", wait[i]);
     }
 
     totalWait = 0;
