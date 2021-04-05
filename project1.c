@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
                 turnaroundPerProcess[i] += instructionList[j].burst;
             if (j < lastOccurance && (currPID != i + 1))
                 wait[i] += instructionList[j].burst;
-            if (j >= firstOccurance && j <= lastOccurance)
+            if (j < firstOccurance)
                 responsePerProcess[i] += instructionList[j].burst;
         }
     }
