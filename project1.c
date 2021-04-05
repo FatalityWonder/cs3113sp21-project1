@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
             turnaroundPerProcess[i] += instructionList[j].burst;
 
             // check if same pid to not be calculated in wait time
-            if (j == lastOccurance && instructionList[j].pid == (i + 1))
+            if (j == lastOccurance || instructionList[j].pid == (i + 1))
                 continue;
 
             wait[i] += instructionList[j].burst;
