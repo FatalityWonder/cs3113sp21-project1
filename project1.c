@@ -8,6 +8,12 @@ typedef struct InstructionData
     unsigned int priority;
 } InstructionData;
 
+typedef struct InstructionTime
+{
+    int first;
+    int last;
+} InstructionTime;
+
 int main(int argc, char *argv[])
 {
     // input data, first two lines
@@ -114,8 +120,59 @@ int main(int argc, char *argv[])
     // get total wait and turnaround time
     int wait[numExecutionElements];
     int turnaroundPerProcess[numExecutionElements];
-    totalWait = 0;
+    int responsePerProcess[numExecutionElements];
+    int firstOccurance = 0;
     int lastOccurance = 0;
+
+    struct InstructionTime* instructionTimeList;
+    instructionTimeList = malloc(sizeof(InstructionTime) * numExecutionElements);
+    
+    //initialize array
+    for (int i = 0; i < numInstructions; ++i)
+    {
+        instructionTimeList[i].first = -1;
+        instructionTimeList[i].last = -1;
+    }
+
+    // check for first and last occurances of a PID
+    int currPID;
+    for (int i = 0; i < numInstructions; ++i)
+    {
+        currPID = instructionList[i].pid;
+        if (instructionTimeList[currPID - 1].first == -1)
+        {
+            instructionTimeList[currPID - 1].first = i;
+            instructionTimeList[currPID - 1].last = i;
+        }
+        else
+        {
+            instructionTimeList[currPID - 1].last = i;
+        }
+    }
+
+    for (int i = 0; i < numExecutionElements; ++i)
+    {
+        firstOccurance = instructionTimeList[i].first;
+        lastOccurance = instructionTimeList[i].last;
+        
+        // initialize response per process and calculate
+        wait[i] = 0;
+        turnaroundPerProcess[i] = 0;
+        responsePerProcess[i] = 0;
+        for (int j = 0; j < numInstructions; ++j)
+        {
+            currPID = instructionList[j].pid;
+
+            if (j <= lastOccurance)
+                turnaroundPerProcess[i] += instructionList[j].burst;
+            if (j < lastOccurance && (currPID != i + 1))
+                wait[i] += instructionList[j].burst;
+            if (j >= firstOccurance && j <= lastOccurance)
+                responsePerProcess[i] += instructionList[j].burst;
+        }
+    }
+
+    /*
     for (int i = 0; i < numExecutionElements; ++i)
     {
         // initialize array values at zero
@@ -155,14 +212,17 @@ int main(int argc, char *argv[])
             wait[i] += instructionList[j].burst;
         }
     }
+    */
 
     totalWait = 0;
-    for (int i = 0; i < numExecutionElements; ++i)
-        totalWait += wait[i];
-
     totalTurnaround = 0;
+    totalResponse = 0;
     for (int i = 0; i < numExecutionElements; ++i)
+    {
+        totalWait += wait[i];
         totalTurnaround += turnaroundPerProcess[i];
+        totalResponse += responsePerProcess[i];
+    }
 
     // calculate cpu utilization
     // one process always occupied
@@ -178,8 +238,7 @@ int main(int argc, char *argv[])
     waiting = totalWait * 1.0 / numExecutionElements;
 
     // calculate response time
-    response = 0.0;
-
+    response = totalResponse * 1.0 / numExecutionElements;
 
     printf("%d\n", voluntary);
     printf("%d\n", nonvoluntary);
@@ -187,5 +246,5 @@ int main(int argc, char *argv[])
     printf("%.2f\n", throughput);
     printf("%.2f\n", turnaround);
     printf("%.2f\n", waiting);
-    printf("%.2f\n", 0.0);
+    printf("%.2f\n", response);
 }
