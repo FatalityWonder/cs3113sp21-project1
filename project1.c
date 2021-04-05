@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
                 lastOccurance = j;
 
                 // simultaneous pid in instruction list
-                if (instructionList[j].pid == instructionList[j - 1].pid)
+                if (j > 0 && instructionList[j].pid == instructionList[j - 1].pid)
                 {
                     continue;
                 }
