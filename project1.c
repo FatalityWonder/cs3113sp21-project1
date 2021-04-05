@@ -137,7 +137,12 @@ int main(int argc, char *argv[])
 
         // count wait time
         for (int j = 0; j < lastOccurance; ++j)
+        {
+            if (instructionList[j].pid == (i + 1))
+                continue;
+                
             wait[i] += instructionList[j].burst;
+        }
     }
 
     totalWait = 0;
