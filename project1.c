@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         instructionList[i].burst = 0;
         instructionList[i].priority = 0;
     }
-    
+
     // read values of each process
     for (int i = 0; i < numInstructions; ++i)
     {
@@ -85,12 +85,13 @@ int main(int argc, char *argv[])
             ++voluntary;
 
             // check if process is nonvoluntary rather than voluntary
-            for (int j = i + 2; j < numInstructions; ++j)
+            for (int j = i + 1; j < numInstructions; ++j)
             {
                 if (previous == instructionList[j].pid)
                 {
                     ++nonvoluntary;
                     --voluntary;
+                    break;
                 }
             }
         }
