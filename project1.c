@@ -164,8 +164,6 @@ int main(int argc, char *argv[])
     for (int i = 0; i < numExecutionElements; ++i)
         totalTurnaround += turnaroundPerProcess[i];
 
-    printf("%d\n", totalTurnaround);
-
     // calculate cpu utilization
     // one process always occupied
     utilization = 100.0;
