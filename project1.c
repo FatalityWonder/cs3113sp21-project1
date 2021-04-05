@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     double waiting;
     double response;
     int totalTime;
+    int totalWait;
 
     struct InstructionData* instructionList;
 
@@ -108,18 +109,55 @@ int main(int argc, char *argv[])
         totalTime += instructionList[i].burst;
     }
 
+    // get total wait time
+    int wait[numExecutionElements];
+    totalWait = 0;
+    int lastOccurance = 0;
+    for (int i = 0; i < numExecutionElements; ++i)
+    {
+        wait[i] = 0;
+        
+        // check for last occurance of Pid
+        for (int j = (numInstructions - 1); j >= 0; --j)
+        {
+            if (instructionList[j].pid == (i + 1))
+            {
+                lastOccurance = j;
+
+                // simultaneous pid in instruction list
+                if (instructionList[j].pid == instructionList[j - 1].pid)
+                {
+                    continue;
+                }
+
+                // last occurance
+                break;
+            }   
+        }
+
+        // count wait time
+        for (int j = 0; j < lastOccurance; ++j)
+            wait[i] += instructionList[j].burst;
+
+        printf("%d\n", wait[i]);
+    }
+
+    totalWait = 0;
+    for (int i = 0; i < numExecutionElements; ++i)
+        totalWait += wait[i];
+
     // calculate cpu utilization
     // one process always occupied
     utilization = 100.0;
 
     // calculate throughput
-    throughput = (numExecutionElements * 1.0) / totalTime;
+    throughput = numExecutionElements * 1.0 / totalTime;
 
     // calculate turnaround time
     turnaround = 0.0;
 
     // calculate waiting time
-    waiting = 0.0;
+    waiting = totalWait * 1.0 / numExecutionElements;
 
     // calculate response time
     response = 0.0;
@@ -130,6 +168,6 @@ int main(int argc, char *argv[])
     printf("%.2f\n", utilization);
     printf("%.2f\n", throughput);
     printf("%.2f\n", 0.0);
-    printf("%.2f\n", 0.0);
+    printf("%.2f\n", waiting);
     printf("%.2f\n", 0.0);
 }
