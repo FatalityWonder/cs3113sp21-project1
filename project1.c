@@ -18,11 +18,12 @@ int main(int argc, char *argv[])
     // data to output
     int voluntary;
     int nonvoluntary;
-    double untilization;
+    double utilization;
     double throughput;
     double turnaround;
     double waiting;
     double response;
+    int totalTime;
 
     struct InstructionData* instructionList;
 
@@ -80,9 +81,10 @@ int main(int argc, char *argv[])
     {
         current = instructionList[i].pid;
 
+        // if same pid back to back then there is no switch
         if (previous != current)
         {
-            ++voluntary;
+            ++voluntary; // assume voluntary until proven nonvoluntary
 
             // check if process is nonvoluntary rather than voluntary
             for (int j = i + 1; j < numInstructions; ++j)
@@ -99,22 +101,35 @@ int main(int argc, char *argv[])
         previous = current;
     }
 
-    printf("%d\n", voluntary);
-    printf("%d\n", nonvoluntary);
-    printf("%.2f\n", 100.0);
-    printf("%.2f\n", 0.0);
-    printf("%.2f\n", 0.0);
-    printf("%.2f\n", 0.0);
-    printf("%.2f\n", 0.0);
-    
-
-    /** // test output
-    printf("%d\n", numProcesses);
-    printf("%d %d\n", numExecutionElements, numInstructions);
-
+    // get total process time
+    totalTime = 0;
     for (int i = 0; i < numInstructions; ++i)
     {
-        printf("%d %d %d\n", instructionList[i].pid, instructionList[i].burst, instructionList[i].priority);
+        totalTime += instructionList[i].burst;
     }
-    **/
+
+    // calculate cpu utilization
+    // one process always occupied
+    utilization = 100.0;
+
+    // calculate throughput
+    throughput = (numExecutionElements * 1.0) / totalTime;
+
+    // calculate turnaround time
+    turnaround = 0.0;
+
+    // calculate waiting time
+    waiting = 0.0;
+
+    // calculate response time
+    response = 0.0;
+
+
+    printf("%d\n", voluntary);
+    printf("%d\n", nonvoluntary);
+    printf("%.2f\n", utilization);
+    printf("%.2f\n", throughput);
+    printf("%.2f\n", 0.0);
+    printf("%.2f\n", 0.0);
+    printf("%.2f\n", 0.0);
 }
