@@ -118,14 +118,17 @@ int main(int argc, char *argv[])
     }
 
     // get total wait and turnaround time
-    int wait[numExecutionElements];
-    int turnaroundPerProcess[numExecutionElements];
-    int responsePerProcess[numExecutionElements];
+    int* wait;
+    int* turnaroundPerProcess;
+    int* responsePerProcess;
     int firstOccurance = 0;
     int lastOccurance = 0;
 
     struct InstructionTime* instructionTimeList;
     instructionTimeList = malloc(sizeof(InstructionTime) * numExecutionElements);
+    wait = malloc(sizeof(int) * numExecutionElements);
+    turnaroundPerProcess = malloc(sizeof(int) * numExecutionElements);
+    responsePerProcess = malloc(sizeof(int) * numExecutionElements);
     
     //initialize array; using -1 to check if PID does not exist
     for (int i = 0; i < numInstructions; ++i)
@@ -177,7 +180,7 @@ int main(int argc, char *argv[])
                 responsePerProcess[i] += instructionList[j].burst;
         }
     }
-    printf("test\n");
+    
     totalWait = 0;
     totalTurnaround = 0;
     totalResponse = 0;
