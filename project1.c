@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     struct InstructionTime* instructionTimeList;
     instructionTimeList = malloc(sizeof(InstructionTime) * numExecutionElements);
     
-    //initialize array
+    //initialize array; using -1 to check if PID does not exist
     for (int i = 0; i < numInstructions; ++i)
     {
         instructionTimeList[i].first = -1;
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
                 responsePerProcess[i] += instructionList[j].burst;
         }
     }
-
+    printf("test\n");
     totalWait = 0;
     totalTurnaround = 0;
     totalResponse = 0;
