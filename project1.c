@@ -155,7 +155,11 @@ int main(int argc, char *argv[])
         firstOccurance = instructionTimeList[i].first;
         lastOccurance = instructionTimeList[i].last;
         
-        // initialize response per process and calculate
+        // check if PID Does not exist
+        if (firstOccurance == -1)
+            continue;
+
+        // initialize values per process and calculate
         wait[i] = 0;
         turnaroundPerProcess[i] = 0;
         responsePerProcess[i] = 0;
@@ -165,54 +169,14 @@ int main(int argc, char *argv[])
 
             if (j <= lastOccurance)
                 turnaroundPerProcess[i] += instructionList[j].burst;
+
             if (j < lastOccurance && (currPID != i + 1))
                 wait[i] += instructionList[j].burst;
+
             if (j < firstOccurance)
                 responsePerProcess[i] += instructionList[j].burst;
         }
     }
-
-    /*
-    for (int i = 0; i < numExecutionElements; ++i)
-    {
-        // initialize array values at zero
-        wait[i] = 0;
-        turnaroundPerProcess[i] = 0;
-        
-        // check for last occurance of Pid
-        for (int j = (numInstructions - 1); j >= 0; --j)
-        {
-            // pid matches index + 1
-            if (instructionList[j].pid == (i + 1))
-            {
-                lastOccurance = j;
-
-                // simultaneous pid in instruction list
-                if (j > 0 && instructionList[j].pid == instructionList[j - 1].pid)
-                {
-                    turnaroundPerProcess[i] += instructionList[j].burst;
-                    continue;
-                }
-
-                // last occurance
-                break;
-            }   
-        }
-
-        // count wait and turnaround time
-        for (int j = 0; j <= lastOccurance; ++j)
-        {
-            // always increase turnaround time
-            turnaroundPerProcess[i] += instructionList[j].burst;
-
-            // check if same pid to not be calculated in wait time
-            if (j == lastOccurance || instructionList[j].pid == (i + 1))
-                continue;
-
-            wait[i] += instructionList[j].burst;
-        }
-    }
-    */
 
     totalWait = 0;
     totalTurnaround = 0;
