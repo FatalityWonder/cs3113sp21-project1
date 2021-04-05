@@ -25,6 +25,8 @@ int main(int argc, char *argv[])
     double response;
     int totalTime;
     int totalWait;
+    int totalTurnaround;
+    int totalResponse;
 
     struct InstructionData* instructionList;
 
@@ -109,17 +111,21 @@ int main(int argc, char *argv[])
         totalTime += instructionList[i].burst;
     }
 
-    // get total wait time
+    // get total wait and turnaround time
     int wait[numExecutionElements];
+    int turnaroundPerProcess[numExecutionElements];
     totalWait = 0;
     int lastOccurance = 0;
     for (int i = 0; i < numExecutionElements; ++i)
     {
+        // initialize array values at zero
         wait[i] = 0;
+        turnaroundPerProcess[i] = 0;
         
         // check for last occurance of Pid
         for (int j = (numInstructions - 1); j >= 0; --j)
         {
+            // pid matches index + 1
             if (instructionList[j].pid == (i + 1))
             {
                 lastOccurance = j;
@@ -127,6 +133,7 @@ int main(int argc, char *argv[])
                 // simultaneous pid in instruction list
                 if (j > 0 && instructionList[j].pid == instructionList[j - 1].pid)
                 {
+                    turnaroundPerProcess[i] += instructionList[j].burst;
                     continue;
                 }
 
@@ -135,12 +142,16 @@ int main(int argc, char *argv[])
             }   
         }
 
-        // count wait time
-        for (int j = 0; j < lastOccurance; ++j)
+        // count wait and turnaround time
+        for (int j = 0; j <= lastOccurance; ++j)
         {
-            if (instructionList[j].pid == (i + 1))
+            // always increase turnaround time
+            turnaroundPerProcess[i] += instructionList[j].burst;
+
+            // check if same pid to not be calculated in wait time
+            if (j == lastOccurance && instructionList[j].pid == (i + 1))
                 continue;
-                
+
             wait[i] += instructionList[j].burst;
         }
     }
@@ -148,6 +159,12 @@ int main(int argc, char *argv[])
     totalWait = 0;
     for (int i = 0; i < numExecutionElements; ++i)
         totalWait += wait[i];
+
+    totalTurnaround = 0;
+    for (int i = 0; i < numExecutionElements; ++i)
+        totalTurnaround += turnaroundPerProcess[i];
+
+    printf("%d\n", totalTurnaround);
 
     // calculate cpu utilization
     // one process always occupied
@@ -157,7 +174,7 @@ int main(int argc, char *argv[])
     throughput = numExecutionElements * 1.0 / totalTime;
 
     // calculate turnaround time
-    turnaround = 0.0;
+    turnaround = totalTurnaround * 1.0 / numExecutionElements;
 
     // calculate waiting time
     waiting = totalWait * 1.0 / numExecutionElements;
@@ -170,7 +187,7 @@ int main(int argc, char *argv[])
     printf("%d\n", nonvoluntary);
     printf("%.2f\n", utilization);
     printf("%.2f\n", throughput);
-    printf("%.2f\n", 0.0);
+    printf("%.2f\n", turnaround);
     printf("%.2f\n", waiting);
     printf("%.2f\n", 0.0);
 }
