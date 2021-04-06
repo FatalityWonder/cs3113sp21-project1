@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
     instructionTimeList = malloc(sizeof(InstructionTime) * numExecutionElements);
     
     //initialize array; using -1 to check if PID does not exist
-    for (int i = 0; i < numInstructions; ++i)
+    for (int i = 0; i < numExecutionElements; ++i)
     {
         instructionTimeList[i].first = -1;
         instructionTimeList[i].last = -1;
