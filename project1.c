@@ -172,8 +172,8 @@ int main(int argc, char *argv[])
         {
             currPID = instructionList[j].pid;
 
-            //if (j <= lastOccurance)
-                //turnaroundPerProcess[i] += instructionList[j].burst;
+            if (j <= lastOccurance)
+                turnaroundPerProcess[i] += instructionList[j].burst;
 
             if (j < lastOccurance && (currPID != i + 1))
                 wait[i] += instructionList[j].burst;
