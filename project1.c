@@ -142,6 +142,11 @@ int main(int argc, char *argv[])
     for (int i = 0; i < numInstructions; ++i)
     {
         currPID = instructionList[i].pid;
+
+        // restart loop if PID DNE
+        if (currPID == 0)
+            continue;
+
         if (instructionTimeList[currPID - 1].first == -1)
         {
             instructionTimeList[currPID - 1].first = i;
