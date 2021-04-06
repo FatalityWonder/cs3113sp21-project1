@@ -118,17 +118,14 @@ int main(int argc, char *argv[])
     }
 
     // get total wait and turnaround time
-    int* wait;
-    int* turnaroundPerProcess;
-    int* responsePerProcess;
+    int wait[numExecutionElements];
+    int turnaroundPerProcess[numExecutionElements];
+    int responsePerProcess[numExecutionElements];
     int firstOccurance = 0;
     int lastOccurance = 0;
 
     struct InstructionTime* instructionTimeList;
     instructionTimeList = malloc(sizeof(InstructionTime) * numExecutionElements);
-    wait = malloc(sizeof(int) * numExecutionElements);
-    turnaroundPerProcess = malloc(sizeof(int) * numExecutionElements);
-    responsePerProcess = malloc(sizeof(int) * numExecutionElements);
     
     //initialize array; using -1 to check if PID does not exist
     for (int i = 0; i < numInstructions; ++i)
@@ -181,8 +178,8 @@ int main(int argc, char *argv[])
             if (j < lastOccurance && (currPID != i + 1))
                 wait[i] += instructionList[j].burst;
 
-            if (j < firstOccurance)
-                responsePerProcess[i] += instructionList[j].burst;
+            //if (j < firstOccurance)
+               // responsePerProcess[i] += instructionList[j].burst;
         }
     }
     
@@ -193,7 +190,7 @@ int main(int argc, char *argv[])
     {
         totalWait += wait[i];
         totalTurnaround += turnaroundPerProcess[i];
-        totalResponse += responsePerProcess[i];
+        //totalResponse += responsePerProcess[i];
     }
 
     // calculate cpu utilization
