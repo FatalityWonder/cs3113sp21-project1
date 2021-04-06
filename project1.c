@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
     totalResponse = 0;
     for (int i = 0; i < numExecutionElements; ++i)
     {
-        //totalWait += wait[i];
+        totalWait += wait[i];
         totalTurnaround += turnaroundPerProcess[i];
         totalResponse += responsePerProcess[i];
     }
