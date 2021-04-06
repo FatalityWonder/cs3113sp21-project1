@@ -175,11 +175,11 @@ int main(int argc, char *argv[])
             if (j <= lastOccurance)
                 turnaroundPerProcess[i] += instructionList[j].burst;
 
-            if (j < lastOccurance && (currPID != i + 1))
-                wait[i] += instructionList[j].burst;
+           // if (j < lastOccurance && (currPID != i + 1))
+               // wait[i] += instructionList[j].burst;
 
-            //if (j < firstOccurance)
-               // responsePerProcess[i] += instructionList[j].burst;
+            if (j < firstOccurance)
+                responsePerProcess[i] += instructionList[j].burst;
         }
     }
     
@@ -189,8 +189,8 @@ int main(int argc, char *argv[])
     for (int i = 0; i < numExecutionElements; ++i)
     {
         totalWait += wait[i];
-        totalTurnaround += turnaroundPerProcess[i];
-        //totalResponse += responsePerProcess[i];
+        //totalTurnaround += turnaroundPerProcess[i];
+        totalResponse += responsePerProcess[i];
     }
 
     // calculate cpu utilization
